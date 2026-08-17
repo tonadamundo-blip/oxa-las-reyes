@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Las Reyes - Menú Digital</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: rgba(26, 26, 26, 0.95);
+            --accent-color: #ff6600;
+            --text-main: #f3f4f6;
+            --text-muted: #d1d5db;
+            --border-color: #ff6600;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            box-sizing: border-box;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 102, 0, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            margin-top: 14px;
+        }
+
+        select, input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #78350f;
+            background: #1f130c;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(255, 102, 0, 0.4);
+        }
+
+        .summary-box {
+            background: #1f130c;
+            border: 1px solid #78350f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #ff6600, #cc5200);
+            color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            padding: 14px;
+            text-transform: uppercase;
+            border-radius: 8px;
+            width: 100%;
+            transition: transform 0.1s;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-menu-galeria {
+            background: #2b1d14;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        /* Modal y Overlays */
+        #galleryModal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: #1f130c; border: 2px solid var(--accent-color); margin: auto; padding: 20px; border-radius: 12px; max-width: 600px; position: relative; }
+        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .gallery-card { background: #2b1d14; border: 1px solid #78350f; border-radius: 8px; overflow: hidden; text-align: center; padding-bottom: 10px; }
+        .gallery-card img { width: 100%; height: 120px; object-fit: cover; }
+        .gallery-card h4 { font-size: 0.9rem; margin: 8px 5px 4px 5px; color: var(--text-main); }
+        .gallery-card span { font-size: 0.85rem; color: #ffcc00; font-weight: bold; }
+
+        #loadingOverlay { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.88); justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; }
+        .loading-box { background: #1f130c; border: 2px solid var(--accent-color); padding: 25px; border-radius: 16px; text-align: center; max-width: 380px; width: 100%; }
+        .loading-box img { width: 90px; height: 90px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent-color); margin-bottom: 10px; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.1); width: 32px; height: 32px; border-radius: 50%; border-left-color: var(--accent-color); animation: spin 0.8s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-title">🔥 Las Reyes - Comida Rápida 🔥</div>
+        <button type="button" class="btn-menu-galeria" onclick="openGallery()">🖼️ Ver Fotos y Precios del Menú</button>
+
+        <div class="section-title">1. Elige tu Plato</div>
+        <select id="dishSelect" onchange="updatePrice()">
+            <optgroup label="Salchipapas">
+                <option value="Plato Junior (Nuggets, papa, arroz, ensalada, cremas)" data-price="8">Plato 'Junior' — S/. 8.00</option>
+                <option value="Salchipapa (Hotdog, Papa, ensalada, cremas)" data-price="7">Salchipapa — S/. 7.00</option>
+                <option value="Salchiplatano (Platano, hotdog, ensalada, cremas)" data-price="8">Salchiplátano — S/. 8.00</option>
+                <option value="Salchipapon (Chorizo, cabanosi, queso, huevo, papa, ensalada, cremas)" data-price="12">Salchipapón — S/. 12.00</option>
+                <option value="Choripapa (Chorizo, cabanosi, queso, papa, ensalada, cremas)" data-price="13">Choripapa — S/. 13.00</option>
+                <option value="Salchipobre (Hotdog, papa, platano, huevo, ensalada, cremas)" data-price="12">Salchipobre — S/. 12.00</option>
+            </optgroup>
+            <optgroup label="Broasther y Platos">
+                <option value="Pierna o ala (Pollo, papa, chaufa, ensalada)" data-price="9">Pierna o ala — S/. 9.00</option>
+                <option value="Entrepierna (Pollo, papa, chaufa, ensalada)" data-price="10">Entrepierna — S/. 10.00</option>
+                <option value="Pecho (Pollo, papa, chaufa, ensalada)" data-price="11">Pecho — S/. 11.00</option>
+                <option value="Crispy (Trozos de pollo, papa, chaufa, ensalada)" data-price="12">Crispy — S/. 12.00</option>
+                <option value="Pecho a la plancha (Pecho, papa, arroz blanco, ensalada)" data-price="11">Pecho a la plancha — S/. 11.00</option>
+                <option value="Especial de la casa (Carne, pollo, chorizo, hotdog, platano, papas, arroz)" data-price="17">Especial de la casa — S/. 17.00</option>
+                <option value="Lomo saltado (Carne, papa, arroz blanco)" data-price="15">Lomo saltado — S/. 15.00</option>
+                <option value="Chaufa Oxapampina (Pollo, chorizo, tocino, cabanosi, hotdog, platanos)" data-price="15">Chaufa Oxapampina — S/. 15.00</option>
+            </optgroup>
+            <optgroup label="Hamburguesas">
+                <option value="Clasica (Carne, pan, papa, ensalada)" data-price="8">Hamburguesa Clásica — S/. 8.00</option>
+                <option value="Choripan (Chorizo, pan, papa, ensalada)" data-price="8">Choripan — S/. 8.00</option>
+                <option value="La Reyes (Carne, pan, chorizo, huevo, hotdog, queso, papa, ensalada)" data-price="15">La Reyes — S/. 15.00</option>
+                <option value="A lo pobre (Carne, pan, papa, platano, huevo, ensalada)" data-price="11">Hamburguesa A lo pobre — S/. 11.00</option>
+                <option value="Cheddar Oxa (Carne, chorizo, doble queso, cebolla, pepinillo)" data-price="17">Cheddar Oxa — S/. 17.00</option>
+            </optgroup>
+        </select>
+
+        <div class="section-title">2. Adicionales o Extras</div>
+        <select id="extraSelect" onchange="updatePrice()">
+            <option value="Sin adicional" data-price="0">Sin adicional (S/. 0.00)</option>
+            <option value="Adicional Queso" data-price="1.50">Queso (+S/. 1.50)</option>
+            <option value="Adicional Tocino" data-price="2.00">Tocino (+S/. 2.00)</option>
+            <option value="Adicional Platano" data-price="1.50">Plátano (+S/. 1.50)</option>
+            <option value="Adicional Chorizo" data-price="5.00">Chorizo (+S/. 5.00)</option>
+        </select>
+
+        <div class="section-title">3. Bebida</div>
+        <select id="drinkSelect" onchange="updatePrice()">
+            <option value="Sin bebida" data-price="0">Sin bebida (S/. 0.00)</option>
+            <option value="Coca Cola Personal" data-price="4.00">Coca Cola (Personal) — S/. 4.00</option>
+            <option value="Coca Cola 1.5 Lt" data-price="9.50">Coca Cola (1 1/2 Lt.) — S/. 9.50</option>
+            <option value="Inca Kola Personal" data-price="4.00">Inca Kola (Personal) — S/. 4.00</option>
+            <option value="Limonada 1/2 Lt" data-price="5.00">Limonada (1/2 Lt.) — S/. 5.00</option>
+        </select>
+
+        <div class="section-title">4. Modalidad de Entrega</div>
+        <select id="deliverySelect" onchange="handleDeliveryChange(); updatePrice();">
+            <option value="Recojo en Local" data-price="0">Recojo en Local (S/. 0.00)</option>
+            <option value="Delivery a Domicilio" data-price="5">Delivery a Domicilio (+S/. 5.00)</option>
+        </select>
+
+        <div class="section-title">5. Tus Datos de Contacto</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+            <input type="text" id="clientName" placeholder="Tu Nombre y Apellido" required>
+            <input type="text" id="clientAddress" placeholder="Dirección exacta o Referencia" style="display: none;">
+            <input type="tel" id="clientPhone" placeholder="Número de Celular" required>
+        </div>
+
+        <div class="section-title">6. Método de Pago</div>
+        <select id="paymentSelect">
+            <option value="Yape / Plin (Yapear al 977159494)">Yape / Plin (Al 977159494)</option>
+            <option value="Efectivo contra entrega">Efectivo contra entrega / recojo</option>
+        </select>
+
+        <div class="summary-box">
+            <div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">RESUMEN:</div>
+                <div id="summaryText" style="font-size: 0.85rem; font-weight: bold;">Plato Junior</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.72rem; color: var(--text-muted);">TOTAL:</div>
+                <div id="totalPriceDisplay" style="font-size: 1.15rem; font-weight: bold; color: var(--accent-color);">S/. 8.00</div>
+            </div>
+        </div>
+
+        <button class="btn-action" onclick="iniciarProcesoPedido()">🚀 Confirmar y Enviar Pedido</button>
+    </div>
+
+    <!-- Modal de Galería de Imágenes -->
+    <div id="galleryModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeGallery()">&times;</span>
+            <h3 style="color: var(--accent-color); text-align: center; margin-top: 0;">Menú Las Reyes</h3>
+            <div class="gallery-grid">
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=400&q=80" alt="Broaster">
+                    <h4>Pollo Broaster</h4>
+                </div>
+                <div class="gallery-card">
+                    <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=400&q=80" alt="Hamburguesa">
+                    <h4>Hamburguesas</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Carga -->
+    <div id="loadingOverlay">
+        <div class="loading-box" id="loadingContent">
+            <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=200&q=80" alt="Cargando">
+            <h4 style="color: var(--accent-color); margin: 5px 0 10px 0;">Calculando Total...</h4>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPrice = 8;
+        let finalWhatsAppUrl = "";
+
+        window.onload = function() { updatePrice(); };
+        function openGallery() { document.getElementById('galleryModal').style.display = 'block'; }
+        function closeGallery() { document.getElementById('galleryModal').style.display = 'none'; }
+        window.onclick = function(e) { if (e.target === document.getElementById('galleryModal')) closeGallery(); }
+
+        function handleDeliveryChange() {
+            document.getElementById('clientAddress').style.display = 
+                document.getElementById('deliverySelect').value === 'Delivery a Domicilio' ? 'block' : 'none';
+        }
+
+        function updatePrice() {
+            let getPrice = (id) => parseFloat(document.getElementById(id).options[document.getElementById(id).selectedIndex].getAttribute('data-price'));
+            currentPrice = getPrice('dishSelect') + getPrice('extraSelect') + getPrice('drinkSelect') + getPrice('deliverySelect');
+            document.getElementById('summaryText').innerText = document.getElementById('dishSelect').value.split('(')[0].trim();
+            document.getElementById('totalPriceDisplay').innerText = `S/. ${currentPrice.toFixed(2)}`;
+        }
+
+        function iniciarProcesoPedido() {
+            let name = document.getElementById('clientName').value.trim();
+            let phone = document.getElementById('clientPhone').value.trim();
+            let deliverySelect = document.getElementById('deliverySelect').value;
+            let address = document.getElementById('clientAddress').value.trim();
+            let payment = document.getElementById('paymentSelect').value;
+
+            if (!name || !phone || (deliverySelect === 'Delivery a Domicilio' && !address)) {
+                alert("Por favor completa tus datos de contacto y entrega.");
+                return;
+            }
+
+            // CODIGO BLINDADO: Usamos \r\n para saltos limpios y sin acentos ni emojis.
+            let rawMessage = "Hola! Quisiera confirmar mi pedido por favor.\r\n\r\n";
+            rawMessage += "=== DETALLE DEL PEDIDO ===\r\n\r\n";
+            rawMessage += "*Cliente:* " + name + "\r\n";
+            rawMessage += "*Celular:* " + phone + "\r\n\r\n";
+            rawMessage += "*Plato:* " + document.getElementById('dishSelect').value + "\r\n";
+            rawMessage += "*Adicional:* " + document.getElementById('extraSelect').value + "\r\n";
+            rawMessage += "*Bebida:* " + document.getElementById('drinkSelect').value + "\r\n";
+            rawMessage += "*Entrega:* " + deliverySelect + "\r\n";
+            
+            if (deliverySelect === 'Delivery a Domicilio') {
+                rawMessage += "*Direccion:* " + address + "\r\n";
+            }
+            
+            rawMessage += "*Pago:* " + payment + "\r\n\r\n";
+            rawMessage += "*TOTAL A PAGAR: S/. " + currentPrice.toFixed(2) + "*";
+
+            finalWhatsAppUrl = "https://wa.me/51977159494?text=" + encodeURIComponent(rawMessage);
+
+            let overlay = document.getElementById('loadingOverlay');
+            let contentBox = document.getElementById('loadingContent');
+            overlay.style.display = 'flex';
+            
+            setTimeout(function() {
+                contentBox.innerHTML = `
+                    <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=200&q=80" alt="Las Reyes">
+                    <h3 style="color: var(--accent-color); margin: 5px 0 5px 0;">Pedido Verificado ✅</h3>
+                    
+                    <div style="background: #150c08; border: 1px dashed var(--accent-color); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: left;">
+                        <div style="font-size: 0.85rem; color: #ffcc00; font-weight: bold; text-align: center; margin-bottom: 5px;">📱 YAPE / PLIN: 977159494</div>
+                        <div style="font-size: 1rem; font-weight: bold; color: var(--accent-color); margin-top: 8px; text-align: center;">TOTAL: S/. ${currentPrice.toFixed(2)}</div>
+                    </div>
+
+                    <button class="btn-action" onclick="enviarAlWhatsApp()">📲 Enviar Pedido a WhatsApp</button>
+                `;
+            }, 2000);
+        }
+
+        function enviarAlWhatsApp() { window.location.href = finalWhatsAppUrl; }
+    </script>
+</body>
+</html>
