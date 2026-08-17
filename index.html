@@ -284,22 +284,22 @@
                 return;
             }
 
-            // CODIGO BLINDADO: Usamos \r\n para saltos limpios y sin acentos ni emojis.
-            let rawMessage = "Hola! Quisiera confirmar mi pedido por favor.\r\n\r\n";
-            rawMessage += "=== DETALLE DEL PEDIDO ===\r\n\r\n";
-            rawMessage += "*Cliente:* " + name + "\r\n";
-            rawMessage += "*Celular:* " + phone + "\r\n\r\n";
-            rawMessage += "*Plato:* " + document.getElementById('dishSelect').value + "\r\n";
-            rawMessage += "*Adicional:* " + document.getElementById('extraSelect').value + "\r\n";
-            rawMessage += "*Bebida:* " + document.getElementById('drinkSelect').value + "\r\n";
-            rawMessage += "*Entrega:* " + deliverySelect + "\r\n";
+            // Aquí está la magia: emojis codificados para que nunca den error.
+            let rawMessage = "\uD83D\uDC4B ¡Hola! Quisiera confirmar mi pedido por favor.\r\n\r\n";
+            rawMessage += "\uD83D\uDCDD *DETALLE DEL PEDIDO*\r\n\r\n";
+            rawMessage += "\uD83D\uDC64 *Cliente:* " + name + "\r\n";
+            rawMessage += "\uD83D\uDCF1 *Celular:* " + phone + "\r\n\r\n";
+            rawMessage += "\uD83C\uDF7D *Plato:* " + document.getElementById('dishSelect').value + "\r\n";
+            rawMessage += "\u2795 *Adicional:* " + document.getElementById('extraSelect').value + "\r\n";
+            rawMessage += "\uD83E\uDD64 *Bebida:* " + document.getElementById('drinkSelect').value + "\r\n";
+            rawMessage += "\uD83D\uDEF5 *Entrega:* " + deliverySelect + "\r\n";
             
             if (deliverySelect === 'Delivery a Domicilio') {
-                rawMessage += "*Direccion:* " + address + "\r\n";
+                rawMessage += "\uD83D\uDCCD *Dirección:* " + address + "\r\n";
             }
             
-            rawMessage += "*Pago:* " + payment + "\r\n\r\n";
-            rawMessage += "*TOTAL A PAGAR: S/. " + currentPrice.toFixed(2) + "*";
+            rawMessage += "\uD83D\uDCB3 *Pago:* " + payment + "\r\n\r\n";
+            rawMessage += "\uD83D\uDCB0 *TOTAL A PAGAR: S/. " + currentPrice.toFixed(2) + "*";
 
             finalWhatsAppUrl = "https://wa.me/51977159494?text=" + encodeURIComponent(rawMessage);
 
